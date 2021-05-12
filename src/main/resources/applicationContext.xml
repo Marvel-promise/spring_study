@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        ">
+<!--        加载jdbc.properties文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+<!--   配置数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+<!--    配置JdbcTemplate对象-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+<!--配置roleService-->
+    <bean id="roleService" class="com.Wang.service.Impl.RoleServiceImpl">
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+<!--    配置roleDao  -->
+    <bean id="roleDao" class="com.Wang.dao.Impl.RoleDaoImpl">
+        <property name="template" ref="jdbcTemplate"/>
+    </bean>
+<!--    配置UserService-->
+    <bean id="userService" class="com.Wang.service.Impl.UserServiceImpl">
+        <property name="dao" ref="userDao"/>
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+<!--    配置UserDao-->
+    <bean id="userDao" class="com.Wang.dao.Impl.UserDaoImpl">
+        <property name="template" ref="jdbcTemplate"/>
+    </bean>
+</beans>
